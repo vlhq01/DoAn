@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.doan.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_moneyInputFragment"
+            app:destination="@id/moneyInputFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_contactsListFragment"
+            app:destination="@id/contactsListFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_walletFragment"
+            app:destination="@id/walletFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_mobileDataFragment"
+            app:destination="@id/mobileDataFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/moneyInputFragment"
+        android:name="com.example.doan.MoneyInputFragment"
+        android:label="MoneyInputFragment"
+        tools:layout="@layout/moneyinput_fragment">
+        <action
+            android:id="@+id/action_moneyInputFragment_to_paymentMethodFragment"
+            app:destination="@id/paymentMethodFragment" />
+        <argument
+            android:name="paymentmethod"
+            app:argType="com.example.doan.DataSource.LinkedBanks" />
+        <action
+            android:id="@+id/action_moneyInputFragment_to_topUpResultFragment"
+            app:destination="@id/topUpResultFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.doan.NotificationsFragment"
+        android:label="NotificationsFragment"
+        tools:layout="@layout/notifications_fragment">
+        <action
+            android:id="@+id/action_notificationsFragment_to_transferResultFragment"
+            app:destination="@id/transferResultFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_topUpResultFragment"
+            app:destination="@id/topUpResultFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_paymentResultFragment"
+            app:destination="@id/paymentResultFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_transferFromResultFragment"
+            app:destination="@id/transferFromResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountsandSettingFragment"
+        android:name="com.example.doan.AccountsandSettingFragment"
+        android:label="AccountsandSettingFragment"
+        tools:layout="@layout/accounts_and_setting_fragment">
+        <action
+            android:id="@+id/action_accountsandSettingFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/accountsandSettingFragment" />
+        <action
+            android:id="@+id/action_accountsandSettingFragment_to_settingServicesFragment"
+            app:destination="@id/settingServicesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsListFragment"
+        android:name="com.example.doan.ContactsListFragment"
+        android:label="ContactsListFragment"
+        tools:layout="@layout/moneytransfer_contactlist" >
+        <action
+            android:id="@+id/action_contactsListFragment_to_moneyTransferFragment"
+            app:destination="@id/moneyTransferFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/moneyTransferFragment"
+        android:name="com.example.doan.MoneyTransferFragment"
+        android:label="MoneyTransferFragment"
+        tools:layout="@layout/moneytransfer_fragment">
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="phone"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_moneyTransferFragment_to_transferResultFragment"
+            app:destination="@id/transferResultFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.doan.SignInFragment"
+        android:label="SignInFragment"
+        tools:layout="@layout/sign_in"/>
+    <fragment
+        android:id="@+id/walletFragment"
+        android:name="com.example.doan.WalletFragment"
+        android:label="WalletFragment"
+        tools:layout="@layout/walletfragment">
+        <action
+            android:id="@+id/action_walletFragment_to_bankListFragment"
+            app:destination="@id/bankListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bankListFragment"
+        android:name="com.example.doan.BankListFragment"
+        android:label="BankListFragment"
+        tools:layout="@layout/banklist">
+        <action
+            android:id="@+id/action_bankListFragment_to_addBankDetailFragment"
+            app:destination="@id/addBankDetailFragment"
+            app:popUpTo="@id/walletFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mobileDataFragment"
+        android:name="com.example.doan.MobileDataFragment"
+        android:label="MobileDataFragment"
+        tools:layout="@layout/mobile_data_topup">
+        <action
+            android:id="@+id/action_mobileDataFragment_to_mobileDataPaymentFragment"
+            app:destination="@id/mobileDataPaymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mobileDataPaymentFragment"
+        android:name="com.example.doan.MobileDataPaymentFragment"
+        android:label="MobileDataPaymentFragment"
+        tools:layout="@layout/mobile_data_payment">
+        <argument
+            android:name="phonenumber"
+            app:argType="string" />
+        <argument
+            android:name="carrier"
+            app:argType="string" />
+        <argument
+            android:name="mobile"
+            app:argType="com.example.doan.DataSource.Mobile" />
+        <argument
+            android:name="data"
+            app:argType="com.example.doan.DataSource.Data" />
+        <action
+            android:id="@+id/action_mobileDataPaymentFragment_to_paymentResultFragment"
+            app:destination="@id/paymentResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transferResultFragment"
+        android:name="com.example.doan.TransferResultFragment"
+        android:label="TransferResultFragment"
+        tools:layout="@layout/transferresult">
+        <argument
+            android:name="transferinfo"
+            app:argType="com.example.doan.DataSource.Transfer" />
+        <action
+            android:id="@+id/action_transferResultFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/topUpResultFragment"
+        android:name="com.example.doan.TopUpResultFragment"
+        android:label="TopUpResultFragment"
+        tools:layout="@layout/topupresult">
+        <argument
+            android:name="topupinfo"
+            app:argType="com.example.doan.DataSource.TopUp" />
+        <action
+            android:id="@+id/action_topUpResultFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentResultFragment"
+        android:name="com.example.doan.PaymentResultFragment"
+        android:label="PaymentResultFragment"
+        tools:layout="@layout/paymentresult">
+        <argument
+            android:name="paymentinfo"
+            app:argType="com.example.doan.DataSource.Payment" />
+        <action
+            android:id="@+id/action_paymentResultFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addBankDetailFragment"
+        android:name="com.example.doan.AddBankDetailFragment"
+        android:label="AddBankDetailFragment"
+        tools:layout="@layout/addbankaccount_fragment">
+        <argument
+            android:name="bank"
+            app:argType="com.example.doan.DataSource.Banks" />
+        <action
+            android:id="@+id/action_addBankDetailFragment_to_walletFragment"
+            app:destination="@id/walletFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingServicesFragment"
+        android:name="com.example.doan.SettingServicesFragment"
+        android:label="SettingServicesFragment"
+        tools:layout="@layout/setting_service">
+        <action
+            android:id="@+id/action_settingServicesFragment_to_enterNewPassCodeFragment"
+            app:destination="@id/enterNewPassCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reEnterPasscodeFragment"
+        android:name="com.example.doan.ReEnterPasscodeFragment"
+        android:label="ReEnterPasscodeFragment"
+        tools:layout="@layout/reenter_passcode">
+        <argument
+            android:name="passcode"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_reEnterPasscodeFragment_to_accountsandSettingFragment"
+            app:destination="@id/accountsandSettingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/enterNewPassCodeFragment"
+        android:name="com.example.doan.EnterNewPassCodeFragment"
+        android:label="EnterNewPassCodeFragment"
+        tools:layout="@layout/enter_newpasscode">
+        <action
+            android:id="@+id/action_enterNewPassCodeFragment_to_reEnterPasscodeFragment"
+            app:destination="@id/reEnterPasscodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transferFromResultFragment"
+        android:name="com.example.doan.TransferFromResultFragment"
+        android:label="TransferFromResultFragment"
+        tools:layout="@layout/transferfrom_result">
+        <argument
+            android:name="transferfrominfo"
+            app:argType="com.example.doan.DataSource.TransferFrom" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="com.example.doan.PaymentMethodFragment"
+        android:label="PaymentMethodFragment"
+        tools:layout="@layout/payment_method">
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_moneyInputFragment"
+            app:destination="@id/moneyInputFragment"
+            app:popUpTo="@id/moneyInputFragment"
+            app:popUpToInclusive="true" >
+
+        </action>
+    </fragment>
+
+</navigation>

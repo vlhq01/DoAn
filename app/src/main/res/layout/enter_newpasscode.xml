@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/enternewpasscodett"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="ENTER YOUR NEW PASCODE HERE"
+        android:textSize="20sp"
+        android:textColor="@color/orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.145"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <in.aabhasjindal.otptextview.OtpTextView
+        android:id="@+id/enternewpasscodeotpview"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginRight="15dp"
+        app:hide_otp="true"
+        app:hide_otp_drawable="@drawable/orangedot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:length="6"
+        app:otp_box_background="@drawable/graydoticon" />
+
+    <TextView
+        android:id="@+id/enternewpasscode"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="20dp"
+        android:text="the passcode should not be consecutive, repeative number or is your bank account numberdue to account safety"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enternewpasscodeotpview" />
+</androidx.constraintlayout.widget.ConstraintLayout>

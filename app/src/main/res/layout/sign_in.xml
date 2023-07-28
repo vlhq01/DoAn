@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/outerlayout_bg"
+        android:backgroundTint="@color/gray_white">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineleft"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.057"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineright"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.943"/>
+
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="51dp"
+            android:text="Login"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="51dp"
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/user" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="80dp"
+            android:text="Welcom back"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="240dp"
+            android:layout_height="190dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="115dp"
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintEnd_toStartOf="@id/guidelineright"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/drawkit_vector_illustration_pack_online_shopping_04" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="320dp"
+            android:text="Enter Your Mobile Number"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/orange"
+            android:textStyle=""
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintEnd_toStartOf="@id/guidelineright"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/edtPersonNumber"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="400dp"
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/enter_number"
+
+            android:paddingStart="10dp"
+            android:textSize="15sp"
+
+            app:layout_constraintEnd_toStartOf="@+id/guidelineright"
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="288dp"
+            android:layout_marginTop="470dp"
+            android:text="Change Number?"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnsignin"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="150dp"
+            android:background="@drawable/button_bg"
+            android:backgroundTint="@color/orange"
+            android:backgroundTintMode="add"
+            android:text="Login"
+            android:textSize="12sp"
+
+            app:layout_constraintStart_toStartOf="@id/guidelineleft"
+            app:layout_constraintEnd_toStartOf="@id/guidelineright"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
+
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/udht"
+        android:textAppearance="@style/udht"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guidelineright"
+        app:layout_constraintStart_toStartOf="@id/guidelineleft" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
