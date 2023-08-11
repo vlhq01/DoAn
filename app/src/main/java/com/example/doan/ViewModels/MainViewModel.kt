@@ -25,11 +25,12 @@ class MainViewModel(application: MyApplication) : AndroidViewModel(application) 
     var balance:  MutableLiveData<Int?> = MutableLiveData()
     var passcode:  MutableLiveData<String?> = MutableLiveData()
     var phone: MutableLiveData<String?> = MutableLiveData()
+    var name: MutableLiveData<String?> = MutableLiveData()
     private val db = Firebase.firestore
     val user = Firebase.auth.currentUser
-    val docref = user?.let { db.collection("users").document(it.uid) }
+
     init {
-        observeAuthenticationState()
+        getdatafromdb()
     }
 
     fun getdatafromdb() {
@@ -41,11 +42,13 @@ class MainViewModel(application: MyApplication) : AndroidViewModel(application) 
                     val tempbalance = documents.getLong("balance")
                     val temppasscode = documents.getString("passcode")
                     val tempphone = documents.getString("phone")
+                    val tempname = documents.getString("name")
                     if (tempbalance != null) {
                         balance.postValue(tempbalance.toInt())
                     }
                     passcode.postValue(temppasscode)
                     phone.postValue(tempphone)
+                    name.postValue(tempname)
                 }.addOnFailureListener{
                     Log.d(AccountsandSettingFragment.TAG, "getfromdb: some thing is wrong")
                 }
@@ -53,21 +56,8 @@ class MainViewModel(application: MyApplication) : AndroidViewModel(application) 
         }
     }
 
-    private fun observeAuthenticationState() {
-        if(user != null){
-            docref?.addSnapshotListener { snapshot, e ->
-                if (e!= null){
-                    Log.d(ContentValues.TAG, "Listen failed: ")
-                    return@addSnapshotListener
-                }
-
-                if (snapshot!=null){
-                    getdatafromdb()
-                }
-            }
-        }
-
-
+    fun updateafterlogin(){
+        getdatafromdb()
     }
 
 }

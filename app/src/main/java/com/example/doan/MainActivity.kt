@@ -1,24 +1,33 @@
 package com.example.doan
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 import androidx.navigation.NavController
 
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.example.doan.DataSource.*
 import com.example.doan.ViewModels.*
 
 import com.example.doan.databinding.ActivityMainBinding
+import com.example.doan.utils.Constants
+
 import com.example.doan.utils.PermissionHelper
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -35,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var historyNotificationViewModel: HistoryNotificationViewModel
     lateinit var linkedBanksListViewModel: LinkedBanksListViewModel
     lateinit var mainViewModel: MainViewModel
+    lateinit var contactsListViewModel: ContactsListViewModel
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission(),
@@ -45,12 +55,14 @@ class MainActivity : AppCompatActivity() {
                     Log.d("TAG", ": requestPermissionLauncher denied")
                 }
             })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
         lifecycleScope.launch {
@@ -64,13 +76,56 @@ class MainActivity : AppCompatActivity() {
         initHistoryNotificationViewModel()
         initLinkedBanksListViewModel()
         initMainViewModel()
+        initcontactslistviewmodel()
         PermissionHelper.askPermission(
-                requestPermissionLauncher,
-        this,
-        Manifest.permission.POST_NOTIFICATIONS
+            requestPermissionLauncher,
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
         )
     }
 
+    val receiver = object : BroadcastReceiver() {
+
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        override fun onReceive(context: Context?, intent: Intent?) {
+            try {
+                val type = intent?.getIntExtra("type", -1)
+                when (type) {
+                    BalanceChanges.TYPE_TRANSFER -> {
+                        val transfer = intent.getParcelableExtra("transfer", Transfer::class.java)
+                        Log.d(TAG, "onReceive: " + transfer)
+                    }
+
+                    BalanceChanges.TYPE_TOPUP -> {
+                        val topup = intent.getParcelableExtra("topup", TopUp::class.java)
+                        Log.d(TAG, "onReceive: " + topup)
+                    }
+
+                    BalanceChanges.TYPE_PAYMENT -> {
+                        val payment = intent.getParcelableExtra("payment", Payment::class.java)
+                        Log.d(TAG, "onReceive: " + payment)
+                    }
+
+                    BalanceChanges.TYPE_WITHDRAW -> {
+                        val withdraw = intent.getParcelableExtra("withdraw", WithDraw::class.java)
+                        Log.d(TAG, "receivewithdraw: " + withdraw)
+                    }
+                }
+
+            } catch (e: java.lang.Exception) {
+                Log.d(TAG, "onReceive: " + e)
+            }
+        }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            (receiver),
+            IntentFilter(Constants.BALANCECHANGES)
+        )
+    }
 
     private suspend fun getAndStoreRegToken(uid: String): String {
         // [START log_reg_token]
@@ -103,19 +158,33 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-    private fun initHistoryNotificationViewModel(){
-         val historyNotificationViewModelFactory = HistoryNotificationViewModelFactory(application)
-        historyNotificationViewModel = ViewModelProvider(this, historyNotificationViewModelFactory)[HistoryNotificationViewModel::class.java]
+    private fun initHistoryNotificationViewModel() {
+        val historyNotificationViewModelFactory = HistoryNotificationViewModelFactory(application)
+        historyNotificationViewModel = ViewModelProvider(
+            this,
+            historyNotificationViewModelFactory
+        )[HistoryNotificationViewModel::class.java]
 
     }
 
-    private fun initLinkedBanksListViewModel(){
+    private fun initLinkedBanksListViewModel() {
         val linkedBanksListViewModelFactory = LinkedBanksListViewModelFactory(application)
-        linkedBanksListViewModel = ViewModelProvider(this, linkedBanksListViewModelFactory)[LinkedBanksListViewModel::class.java]
+        linkedBanksListViewModel = ViewModelProvider(
+            this,
+            linkedBanksListViewModelFactory
+        )[LinkedBanksListViewModel::class.java]
     }
 
-    private fun initMainViewModel(){
+    private fun initMainViewModel() {
         val mainViewModelFactory = MainViewModelFactory(application)
         mainViewModel = ViewModelProvider(this, mainViewModelFactory)[MainViewModel::class.java]
+    }
+
+    private fun initcontactslistviewmodel() {
+        val contactsListRepository = ContactsListRepository(this)
+        val contactslistViewModelFactory =
+            ContactslistViewModelFactory(contactsListRepository, application)
+        contactsListViewModel =
+            ViewModelProvider(this, contactslistViewModelFactory)[ContactsListViewModel::class.java]
     }
 }

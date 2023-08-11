@@ -5,6 +5,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide.init
 import com.example.doan.DataSource.*
 import com.example.doan.ClicklistenerInterface.HistoryItemClickListener
 import com.example.doan.R
@@ -12,18 +13,35 @@ import com.example.doan.databinding.DateItemBinding
 import com.example.doan.databinding.PaymentItemBinding
 import com.example.doan.databinding.TopupItemBinding
 import com.example.doan.databinding.TransferItemBinding
+import com.example.doan.databinding.WithdrawitemBinding
+import com.example.doan.databinding.WithdrawresultBinding
 
-class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcallback : HistoryItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class HistoryAdapter(
+    private var mListData: ArrayList<BalanceChanges>,
+    var mcallback: HistoryItemClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return when(viewType){
-              BalanceChanges.TYPE_DATE -> DateViewHolder(DateItemBinding.inflate(layoutInflater))
-              BalanceChanges.TYPE_TRANSFER -> TransferViewHolder(TransferItemBinding.inflate(layoutInflater))
-              BalanceChanges.TYPE_TOPUP -> TopUpViewHolder(TopupItemBinding.inflate(layoutInflater))
-              BalanceChanges.TYPE_TRANSFERFROM -> TransferFromViewHolder(TransferItemBinding.inflate(layoutInflater))
+        return when (viewType) {
+            BalanceChanges.TYPE_DATE -> DateViewHolder(DateItemBinding.inflate(layoutInflater))
+            BalanceChanges.TYPE_TRANSFER -> TransferViewHolder(
+                TransferItemBinding.inflate(
+                    layoutInflater
+                )
+            )
+            BalanceChanges.TYPE_TOPUP -> TopUpViewHolder(TopupItemBinding.inflate(layoutInflater))
+            BalanceChanges.TYPE_TRANSFERFROM -> TransferFromViewHolder(
+                TransferItemBinding.inflate(
+                    layoutInflater
+                )
+            )
+            BalanceChanges.TYPE_WITHDRAW -> WithDrawViewHolder(
+                WithdrawitemBinding.inflate(
+                    layoutInflater
+                )
+            )
             else -> {
                 PaymentViewHolder(PaymentItemBinding.inflate(layoutInflater))
             }
@@ -40,7 +58,7 @@ class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcal
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder.itemViewType){
+        when (holder.itemViewType) {
             BalanceChanges.TYPE_TRANSFER -> (holder as TransferViewHolder).bind(
                 item = mListData[position] as Transfer
             )
@@ -56,17 +74,22 @@ class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcal
             BalanceChanges.TYPE_DATE -> (holder as DateViewHolder).bind(
                 item = mListData[position] as DateItem
             )
+            BalanceChanges.TYPE_WITHDRAW -> (holder as WithDrawViewHolder).bind(
+                item = mListData[position] as WithDraw
+            )
         }
     }
 
-    inner class DateViewHolder(val binding: DateItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class DateViewHolder(val binding: DateItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DateItem) {
             binding.txtdate.text = item.date
         }
     }
 
-    inner class TransferViewHolder(val binding : TransferItemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener{
-        fun bind(item : Transfer){
+    inner class TransferViewHolder(val binding: TransferItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: Transfer) {
             binding.txtHistoryName.text = item.receivername
             binding.txttransfertime.text = item.date
             binding.txthistransamount.text = item.amount.toString()
@@ -82,8 +105,9 @@ class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcal
         }
     }
 
-    inner class TransferFromViewHolder(val binding : TransferItemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener{
-        fun bind(item : TransferFrom){
+    inner class TransferFromViewHolder(val binding: TransferItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: TransferFrom) {
             binding.txttransfer.text = "Transfer From"
             binding.imghistorytransfer.setImageResource(R.drawable.transferfromiocn)
             binding.txtHistoryName.text = item.sendername
@@ -101,8 +125,9 @@ class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcal
         }
     }
 
-    inner class TopUpViewHolder(val binding : TopupItemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener{
-        fun bind(item : TopUp){
+    inner class TopUpViewHolder(val binding: TopupItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: TopUp) {
             binding.txttopupsource.text = item.bank
             binding.txttptime.text = item.date
             binding.txttpamount.text = item.amount.toString()
@@ -118,8 +143,28 @@ class HistoryAdapter(private var mListData: ArrayList<BalanceChanges>, var  mcal
         }
     }
 
-    inner class PaymentViewHolder(val binding : PaymentItemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener{
-        fun bind(item : Payment){
+    inner class WithDrawViewHolder(val binding: WithdrawitemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: WithDraw) {
+            binding.txtwithdrawdestination.text = item.bank
+            binding.txtwdbanknumber.text = item.banknumber
+            binding.txtwdtime.text = item.date
+            binding.txtwdamount.text = item.amount.toString()
+        }
+
+        init {
+            binding.root.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position = bindingAdapterPosition
+            mcallback.onHistoryItemClick(position)
+        }
+    }
+
+    inner class PaymentViewHolder(val binding: PaymentItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: Payment) {
             binding.txtPaymentOdersn.text = item.odersn
             binding.txtpmtime.text = item.date
             binding.txtpmamount.text = item.amount.toString()

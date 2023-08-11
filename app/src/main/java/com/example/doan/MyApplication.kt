@@ -6,11 +6,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
-class MyApplication:Application() {
+class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
     }
+
 
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

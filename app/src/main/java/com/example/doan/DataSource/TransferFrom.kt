@@ -4,8 +4,13 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TransferFrom(var amount:Int,
-                    override val date: String, val odersn:String, val sendername:String, val referenceid:String, override var type:Int = TYPE_TRANSFERFROM)
-    : BalanceChanges(type, date), Parcelable {
-    constructor() : this(0,"","","","",BalanceChanges.TYPE_TRANSFERFROM)
+data class TransferFrom(
+    var amount: Int,
+    override val date: String,
+    val odersn: String,
+    val sendername: String,
+    override var referenceid: String,
+    override var type: Int = TYPE_TRANSFERFROM
+) : BalanceChanges(type, referenceid, date), Parcelable {
+    constructor() : this(0, "", "", "", "", TYPE_TRANSFERFROM)
 }

@@ -21,10 +21,10 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 class MobileDataFragment : Fragment() {
 
     private val viewModel by viewModels<ProjectViewModel>()
-    private var _binding: MobileDataTopupBinding?=null
+    private var _binding: MobileDataTopupBinding? = null
     private val binding get() = _binding!!
-    private var mobile :Mobile = Mobile()
-    private var data :Data = Data()
+    private var mobile: Mobile = Mobile()
+    private var data: Data = Data()
     override fun onResume() {
         super.onResume()
         binding.mobiledatatablayout.getTabAt(1)?.select()
@@ -37,34 +37,34 @@ class MobileDataFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = MobileDataTopupBinding.inflate(inflater,container,false)
+        _binding = MobileDataTopupBinding.inflate(inflater, container, false)
 
 
-        binding.mobiledatatablayout.addOnTabSelectedListener(object: OnTabSelectedListener{
+        binding.mobiledatatablayout.addOnTabSelectedListener(object : OnTabSelectedListener {
 
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
-                var fragment : Fragment? = null;
+                var fragment: Fragment? = null
                 if (tab != null) {
-                    when(tab.getPosition()) {
+                    when (tab.position) {
                         0 -> fragment = MobileFragment(mobileDataChangeBtnColor)
 
                         1 -> fragment = DataFragment(mobileDataChangeBtnColor)
 
                     }
                 }
-                var fm : FragmentManager? = activity?.supportFragmentManager
-               var ft = fm?.beginTransaction();
+                var fm: FragmentManager? = activity?.supportFragmentManager
+                var ft = fm?.beginTransaction()
                 if (ft != null) {
                     if (fragment != null) {
                         ft.replace(R.id.fragmentsframlayout, fragment)
                     }
-                };
+                }
                 if (ft != null) {
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                };
+                }
                 if (ft != null) {
                     ft.commit()
-                };
+                }
 
             }
 
@@ -79,10 +79,17 @@ class MobileDataFragment : Fragment() {
             }
 
         })
+        binding.mobiledatatoolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         binding.btncontinue.setOnClickListener(View.OnClickListener {
             val phonenumber = binding.edtmobiledataphonenumber.text.toString()
             val carrier = binding.txtcarrername.text.toString()
-            val action = MobileDataFragmentDirections.actionMobileDataFragmentToMobileDataPaymentFragment(phonenumber,carrier,mobile,data)
+            val action =
+                MobileDataFragmentDirections.actionMobileDataFragmentToMobileDataPaymentFragment(
+                    phonenumber,
+                    carrier,
+                    mobile,
+                    data
+                )
             findNavController().navigate(action)
         })
         val view = binding.root

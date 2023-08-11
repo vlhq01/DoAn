@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
+        android:layout_marginTop="160dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -25,17 +27,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linkedbanksrv">
 
-        <TextView
-            android:id="@+id/addbanklayout"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:background="#edf5ff"
-            android:text="+  Add Bank Card"
-            android:textColor="@color/blue"
-            android:textSize="20sp" />
-
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/addbanklayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="#edf5ff"
+        android:gravity="center"
+        android:text="+  Add Bank Card"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout3" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/wallettoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Wallet"
+        android:background="@color/orange"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:navigationIcon="@drawable/car_ui_icon_arrow_back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

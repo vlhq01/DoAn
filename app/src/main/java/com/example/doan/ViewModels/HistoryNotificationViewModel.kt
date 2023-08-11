@@ -12,6 +12,7 @@ import com.example.doan.DataSource.*
 import com.example.doan.MyApplication
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
@@ -63,6 +64,10 @@ class HistoryNotificationViewModel(application: MyApplication) : AndroidViewMode
                                 BalanceChanges.TYPE_PAYMENT -> {
                                     val payment = doc.toObject(Payment::class.java)
                                     temp.add(BalanceChangesSort(payment,payment.date))
+                                }
+                                BalanceChanges.TYPE_WITHDRAW -> {
+                                    val withdraw = doc.toObject(WithDraw::class.java)
+                                    temp.add(BalanceChangesSort(withdraw,withdraw.date))
                                 }
                             }
                         }

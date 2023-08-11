@@ -18,9 +18,9 @@ import com.google.firebase.ktx.Firebase
 import `in`.aabhasjindal.otptextview.OTPListener
 
 class ReEnterPasscodeFragment : Fragment() {
-    private var _binding: ReenterPasscodeBinding?=null
+    private var _binding: ReenterPasscodeBinding? = null
     private val binding get() = _binding!!
-    private var newotp : String = ""
+    private var newotp: String = ""
     private lateinit var functions: FirebaseFunctions
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +30,13 @@ class ReEnterPasscodeFragment : Fragment() {
             }
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ReenterPasscodeBinding.inflate(inflater,container,false)
+        _binding = ReenterPasscodeBinding.inflate(inflater, container, false)
         val view = binding.root
         functions = Firebase.functions
         binding.reenterpasscodeotp.otpListener = object : OTPListener {
@@ -46,18 +47,22 @@ class ReEnterPasscodeFragment : Fragment() {
 
 
             override fun onOTPComplete(otp: String?) {
-                if(newotp == otp){
+                if (newotp == otp) {
 
                     ChangePasscode(newotp)
-                }
-                else{
+                } else {
                     binding.reenterpasscodeotp.showError()
-                    Toast.makeText(context,"Not matched with the new Passcode that you have entered,Please enter the code again", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        context,
+                        "Not matched with the new Passcode that you have entered,Please enter the code again",
+                        Toast.LENGTH_LONG
+                    )
                 }
 
             }
 
         }
+        binding.reenternewpasscodetoolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         return view
     }
 
@@ -70,9 +75,10 @@ class ReEnterPasscodeFragment : Fragment() {
                 val result = task.result.data as String
                 result
             }.addOnCompleteListener {
-                val action =  ReEnterPasscodeFragmentDirections.actionReEnterPasscodeFragmentToAccountsandSettingFragment(
+                val action =
+                    ReEnterPasscodeFragmentDirections.actionReEnterPasscodeFragmentToAccountsandSettingFragment(
 
-                )
+                    )
                 findNavController().navigate(action)
             }
     }

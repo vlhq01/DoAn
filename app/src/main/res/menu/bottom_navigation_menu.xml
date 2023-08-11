@@ -8,13 +8,19 @@
     <item
         android:id="@+id/mainFragment"
         android:icon="@drawable/baseline_home_24"
-        android:title="@string/Home"
-
-        />
+        android:title="@string/Home" />
     <item
         android:id="@+id/notificationsFragment"
         android:icon="@drawable/baseline_notifications_list_24"
         android:title="@string/notifications" />
+    <item
+        android:id="@+id/qrFragment"
+        android:icon="@drawable/qrscannericon"
+        android:title="Scan"/>
+    <item
+        android:id="@+id/requestFragment"
+        android:icon="@drawable/requesticon"
+        android:title="Request Money"/>
     <item
         android:id="@+id/accountsandSettingFragment"
         android:icon="@drawable/baseline_account_and_setting_24"

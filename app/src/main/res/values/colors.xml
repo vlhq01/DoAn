@@ -17,4 +17,5 @@
     <color name="orange">#EF4639</color>
     <color name="orange_dark">#DF3326</color>
     <color name="grey">#959494</color>
+    <color name="dark_overlay">#B3000000</color>
 </resources>
