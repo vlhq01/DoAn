@@ -71,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-           android:src="@drawable/settingicon" />
+            android:src="@drawable/settingicon" />
 
         <TextView
             android:id="@+id/txtSetting"

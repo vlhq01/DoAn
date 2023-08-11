@@ -1,5 +1,3 @@
 package com.example.doan.DataSource
 
-class TopUpValue(val value: Int) {
-
-}
+class TopUpValue(val value: Int)

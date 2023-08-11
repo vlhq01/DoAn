@@ -13,26 +13,39 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class LinkedBanksListViewModel(application: MyApplication): AndroidViewModel(application) {
-    var linkedbankslist : MutableLiveData<MutableList<LinkedBanks>> = MutableLiveData()
-    private var temp : MutableList<LinkedBanks> = mutableListOf()
+class LinkedBanksListViewModel(application: MyApplication) : AndroidViewModel(application) {
+    var linkedbankslist: MutableLiveData<MutableList<LinkedBanks>> = MutableLiveData()
+    private var temp: MutableList<LinkedBanks> = mutableListOf()
     private val db = Firebase.firestore
-    init{
-        getbanklistfromdb()
+    val user = Firebase.auth.currentUser
+    val docref =
+        user?.let { db.collection("users").document(it.uid).collection("linkedbankslist") }
+    init {
+        docref?.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.d(TAG, "Listen failed: ")
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null) {
+                temp.clear()
+                getbanklistfromdb()
+            }
+        }
     }
 
-    fun getbanklistfromdb(){
+    fun getbanklistfromdb() {
         val user = Firebase.auth
         val uuid = user.currentUser?.uid
         if (uuid != null) {
-            db.collection("users").document(uuid).collection("linkedbankslist").get().addOnSuccessListener {
-                    documents ->
-                for(doc in documents){
-                    val bank = doc.toObject(LinkedBanks::class.java)
-                    temp.add(bank)
-                }
-                linkedbankslist.postValue(temp)
-            }.addOnFailureListener({
+            db.collection("users").document(uuid).collection("linkedbankslist").get()
+                .addOnSuccessListener { documents ->
+                    for (doc in documents) {
+                        val bank = doc.toObject(LinkedBanks::class.java)
+                        temp.add(bank)
+                    }
+                    linkedbankslist.postValue(temp)
+                }.addOnFailureListener({
                 Log.d(TAG, "getbanklistfromdb: something is wrong ")
             })
         }

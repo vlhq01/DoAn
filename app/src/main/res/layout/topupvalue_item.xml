@@ -7,6 +7,7 @@
     app:strokeColor="@color/gray_white"
     android:theme="@style/Theme.MaterialComponents.Light"
     app:strokeWidth="1dp">
+
     <TextView
         android:id="@+id/txttopupvalue"
         android:layout_width="match_parent"
@@ -15,5 +16,5 @@
         android:gravity="center"
         android:textSize="20sp"
         android:layout_margin="25dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 </com.google.android.material.card.MaterialCardView>

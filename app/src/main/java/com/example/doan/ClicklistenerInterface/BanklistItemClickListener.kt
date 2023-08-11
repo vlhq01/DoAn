@@ -1,5 +1,5 @@
 package com.example.doan.ClicklistenerInterface
 
 interface BanklistItemClickListener {
-    fun onBanklistItemClick(pos:Int)
+    fun onBanklistItemClick(pos: Int)
 }

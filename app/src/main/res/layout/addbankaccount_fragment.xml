@@ -20,16 +20,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.15"
-            android:src="@drawable/greensheild">
-        </ImageView>
+            android:src="@drawable/greensheild"></ImageView>
+
         <TextView
             android:id="@+id/txtbanktittle"
             android:layout_width="0dp"
             android:text="Your information will be securely encrypted and protected by our certificaetd system"
             android:layout_height="match_parent"
             android:gravity="center|left"
-            android:layout_weight="0.85"/>
-        
+            android:layout_weight="0.85" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -40,20 +40,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/addaccountheader" >
+        app:layout_constraintTop_toBottomOf="@id/addaccountheader">
 
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="match_parent"
-           android:text="Account"
-           android:gravity="center"
-           android:textSize="20sp"
-           android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Account"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black" />
+
         <ImageView
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:padding="10dp"
-            android:src="@drawable/infoicon"/>
+            android:src="@drawable/infoicon" />
+
         <EditText
             android:id="@+id/edtAccountNumber"
             android:layout_width="0dp"
@@ -63,7 +65,7 @@
 
             android:hint="Account Number"
             android:background="@color/fui_transparent"
-            android:gravity="center|right"/>
+            android:gravity="center|right" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -75,7 +77,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="2dp"
-        app:layout_constraintTop_toBottomOf="@id/addaccountnumber" >
+        app:layout_constraintTop_toBottomOf="@id/addaccountnumber">
 
         <TextView
             android:layout_width="wrap_content"
@@ -83,7 +85,7 @@
             android:hint="Account Name"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/edtOwnerName"
@@ -93,7 +95,7 @@
             android:layout_gravity="right"
             android:hint="Owner Name"
             android:background="@color/fui_transparent"
-            android:gravity="center|right"/>
+            android:gravity="center|right" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

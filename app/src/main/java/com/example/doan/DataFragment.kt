@@ -18,16 +18,10 @@ import com.example.doan.DataSource.Mobile
 import com.example.doan.databinding.DataTopupFragmentBinding
 
 
-class DataFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor):Fragment() {
-    private var _binding: DataTopupFragmentBinding?=null
+class DataFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor) : Fragment() {
+    private var _binding: DataTopupFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var dataset : MutableList<Data>
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-
-
-    }
+    private lateinit var dataset: MutableList<Data>
 
 
     override fun onCreateView(
@@ -35,16 +29,19 @@ class DataFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor):Fragm
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataTopupFragmentBinding.inflate(inflater,container,false)
+        _binding = DataTopupFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
         dataset = mutableListOf<Data>()
-        dataset.add(Data("VinaPhone",0.5,7,13000,2))
-        dataset.add(Data("VinaPhone",1.0,30,20000,3))
-        dataset.add(Data("VinaPhone",3.0,30,30000,2))
-        dataset.add(Data("VinaPhone",5.0,60,50000,3))
-        binding.datarecyclerview.layoutManager = LinearLayoutManager(this.context,
-            LinearLayoutManager.VERTICAL,false)
-        binding.datarecyclerview.adapter = DataAdapter(dataset as ArrayList<Data>,dataItemClickListener)
+        dataset.add(Data("VinaPhone", 0.5, 7, 13000, 2))
+        dataset.add(Data("VinaPhone", 1.0, 30, 20000, 3))
+        dataset.add(Data("VinaPhone", 3.0, 30, 30000, 2))
+        dataset.add(Data("VinaPhone", 5.0, 60, 50000, 3))
+        binding.datarecyclerview.layoutManager = LinearLayoutManager(
+            this.context,
+            LinearLayoutManager.VERTICAL, false
+        )
+        binding.datarecyclerview.adapter =
+            DataAdapter(dataset as ArrayList<Data>, dataItemClickListener)
         return view
     }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="balance"
             type="String" />
@@ -58,13 +59,13 @@
                         android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imgQr"
+                            android:id="@+id/imgWithDraw"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="25dp"
                             android:layout_weight="1"
-                            android:src="@drawable/toppng_com_codigo_qr_400x400" />
+                            android:src="@drawable/withdraw" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/imgTopUp"

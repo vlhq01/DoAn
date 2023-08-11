@@ -1,148 +1,309 @@
 package com.example.doan
 
+
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.doan.AccountsandSettingFragment.Companion.TAG
 import com.example.doan.Adapters.HistoryAdapter
+import com.example.doan.Adapters.NotificationAdapter
 import com.example.doan.ClicklistenerInterface.HistoryItemClickListener
 import com.example.doan.DataSource.*
 import com.example.doan.databinding.HistoryNotificationsFragmentsBinding
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 
 class NotificationsFragment : Fragment() {
-    private val db = Firebase.firestore
-    private var _binding: HistoryNotificationsFragmentsBinding?=null
+    private var _binding: HistoryNotificationsFragmentsBinding? = null
     private val binding get() = _binding!!
-
+    val notificationlist = mutableListOf<BalanceChangesWithCurrentBalance>()
     val consolidatedlist = mutableListOf<BalanceChanges>()
-    //var bllisttosort = mutableListOf<BalanceChangesSort>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
+    lateinit var historyAdapter : HistoryAdapter
+    var tabposition = 0
     override fun onResume() {
         super.onResume()
+        binding.historynotificationtablayout.getTabAt(1)?.select()
+        binding.historynotificationtablayout.getTabAt(0)?.select()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = HistoryNotificationsFragmentsBinding.inflate(inflater,container,false)
+        _binding = HistoryNotificationsFragmentsBinding.inflate(inflater, container, false)
         val view = binding.root
-        //val bl1 = Transfer(20000,"2023-07-09","123243","Hung","dsfrfer5t456")
-        //val bl2 = Transfer(40000,"2023-07-08","76456783","Huy","fgdgrtggth")
-        //val bl3 = TopUp("2023-07-07",100000, "BIDV", "3546546","dsfertg453344")
-        //val bl4 = Payment("2023-07-08",30000,"345436546","sfeerwf454r4")
+        var navBar = activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+        if (navBar != null) {
+            navBar.isVisible = true
+        }
 
-           // bllisttosort = mutableListOf<BalanceChangesSort>(
-            //BalanceChangesSort(bl1,bl1.date),
-            //BalanceChangesSort(bl2,bl2.date),
-            //BalanceChangesSort(bl3,bl3.date),
-            //BalanceChangesSort(bl4,bl4.date),
-        //)
+        val mainViewModel = (activity as MainActivity).mainViewModel
         val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
-        //getfromdb()
-        historyNotificationViewModel.bllisttosort.observe(viewLifecycleOwner, Observer {
-            val groupedMap : Map<String, List<BalanceChangesSort>> = it.groupBy { it.date }
 
-            val sortedMap = groupedMap.toSortedMap(compareByDescending { it })
 
-            for(date:String in sortedMap.keys){
-                consolidatedlist.add(DateItem(date))
 
-                val groupItems: List<BalanceChangesSort>? = groupedMap[date]
-                groupItems?.forEach {
-                    consolidatedlist.add(it.balancechanges)
+       getnotificationdata()
+
+
+
+        historyAdapter = HistoryAdapter()
+
+        binding.historynotificationtablayout.addOnTabSelectedListener(object :
+            OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+
+                if (tab != null) {
+                    tabposition = tab.position
+                    when (tab.position) {
+                        0 -> {
+                            consolidatedlist.clear()
+                            historyNotificationViewModel.bllisttosort.observe(
+                                viewLifecycleOwner,
+                                Observer {
+                                    val groupedMap: Map<String, List<BalanceChangesSort>> =
+                                        it.groupBy { it.date.substring(0, 10) }
+
+                                    val sortedMap =
+                                        groupedMap.toSortedMap(compareByDescending { it })
+
+                                    for (date: String in sortedMap.keys) {
+                                        consolidatedlist.add(DateItem(date))
+
+                                        val groupItems: List<BalanceChangesSort>? = groupedMap[date]
+                                        groupItems?.forEach {
+                                            consolidatedlist.add(it.balancechanges)
+                                        }
+
+                                    }
+                                     historyAdapter = HistoryAdapter(
+                                        consolidatedlist as ArrayList<BalanceChanges>,
+                                        historyitemclicklistener
+                                    )
+                                    binding.rvNotiHistory.adapter = historyAdapter
+                                })
+                            }
+
+                        1 -> {
+                            val sortednotificationlist = ArrayList(notificationlist.sortedWith(compareBy {
+                                it.balanceChanges.date
+                            }))
+                            sortednotificationlist.reverse()
+                            binding.rvNotiHistory.adapter = NotificationAdapter(
+                                sortednotificationlist as ArrayList<BalanceChangesWithCurrentBalance>,
+                                historyitemclicklistener
+                            )
+                        }
+                    }
                 }
+            }
+
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
 
             }
-            binding.rvNotiHistory.adapter = HistoryAdapter(consolidatedlist as ArrayList<BalanceChanges>,historyitemclicklistener)
+
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
         })
 
-        binding.rvNotiHistory.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.VERTICAL,false)
+        binding.hisnotisearchview.setIconifiedByDefault(false)
+
+        binding.hisnotisearchview.setOnQueryTextListener( object : SearchView.OnQueryTextListener{
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                historyAdapter.filter.filter(newText)
+                return false
+            }
+
+        })
+
+        binding.rvNotiHistory.layoutManager =
+            LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         return view
     }
 
-    /*fun getfromdb(){
-
-        val user = Firebase.auth
-        val uuid = user.currentUser?.uid
-        if (uuid != null) {
-            db.collection("users").document(uuid).collection("Wallet Balance Changes").get().addOnSuccessListener {
-                documents ->
-                for(doc in documents){
-                    var type  = doc.getLong("type")
-                    Log.d(TAG, "TYPE: " +type)
-                    if (type != null) {
-                        when(type.toInt()){
-                            BalanceChanges.TYPE_TRANSFER -> {
-                                val transfer = doc.toObject(Transfer::class.java)
-                                bllisttosort.add(BalanceChangesSort(transfer,transfer.date))
-                            }
-                            BalanceChanges.TYPE_TOPUP -> {
-                                val topup = doc.toObject(TopUp::class.java)
-                                bllisttosort.add(BalanceChangesSort(topup,topup.date))
-                            }
-                            BalanceChanges.TYPE_PAYMENT -> {
-                                val payment = doc.toObject(Payment::class.java)
-                                bllisttosort.add(BalanceChangesSort(payment,payment.date))
-                            }
-                        }
-                    }
-                }
-                Log.d(TAG, "getfromdbsfw43r34r34rwef: " + bllisttosort.toString())
-                val groupedMap : Map<String, List<BalanceChangesSort>> = bllisttosort.groupBy { it.date }
-
-                val sortedMap = groupedMap.toSortedMap(compareByDescending { it })
-
-                for(date:String in sortedMap.keys){
-                    consolidatedlist.add(DateItem(date))
-
-                    val groupItems: List<BalanceChangesSort>? = groupedMap[date]
-                    groupItems?.forEach {
-                        consolidatedlist.add(it.balancechanges)
-
-                    }
-                }
-                binding.rvNotiHistory.adapter = HistoryAdapter(consolidatedlist as ArrayList<BalanceChanges>,historyitemclicklistener)
-            }.addOnFailureListener{
-                Log.d(TAG, "getfromdb: some thing is wrong")
-            }
-        }
-    }*/
 
     val historyitemclicklistener = object : HistoryItemClickListener {
         override fun onHistoryItemClick(pos: Int) {
-            val type = consolidatedlist[pos].type
-            when(type){
+            var datalist : ArrayList<BalanceChanges> = ArrayList()
+            if(tabposition == 0){
+                datalist = (binding.rvNotiHistory.adapter as HistoryAdapter).getfiltereddata()
+            }
+
+
+            val type = datalist[pos].type
+            when (type) {
                 BalanceChanges.TYPE_TRANSFER -> {
-                    val action = NotificationsFragmentDirections.actionNotificationsFragmentToTransferResultFragment(consolidatedlist[pos] as Transfer)
+                    val action =
+                        NotificationsFragmentDirections.actionNotificationsFragmentToTransferResultFragment(
+                            datalist[pos] as Transfer
+                        )
                     findNavController().navigate(action)
                 }
 
                 BalanceChanges.TYPE_TRANSFERFROM -> {
-                    val action = NotificationsFragmentDirections.actionNotificationsFragmentToTransferFromResultFragment(consolidatedlist[pos] as TransferFrom)
+                    val action =
+                        NotificationsFragmentDirections.actionNotificationsFragmentToTransferFromResultFragment(
+                            datalist[pos] as TransferFrom
+                        )
                     findNavController().navigate(action)
                 }
 
                 BalanceChanges.TYPE_TOPUP -> {
-                    val action = NotificationsFragmentDirections.actionNotificationsFragmentToTopUpResultFragment(consolidatedlist[pos] as TopUp)
+                    val action =
+                        NotificationsFragmentDirections.actionNotificationsFragmentToTopUpResultFragment(
+                           datalist[pos] as TopUp
+                        )
                     findNavController().navigate(action)
                 }
 
                 BalanceChanges.TYPE_PAYMENT -> {
-                    val action = NotificationsFragmentDirections.actionNotificationsFragmentToPaymentResultFragment(consolidatedlist[pos] as Payment)
+                    val action =
+                        NotificationsFragmentDirections.actionNotificationsFragmentToPaymentResultFragment(
+                            datalist[pos] as Payment
+                        )
+                    findNavController().navigate(action)
+                }
+
+                BalanceChanges.TYPE_WITHDRAW -> {
+                    val action =
+                        NotificationsFragmentDirections.actionNotificationsFragmentToWithDrawResuktFragment(
+                            datalist[pos] as WithDraw
+                        )
                     findNavController().navigate(action)
                 }
             }
         }
+
+        override fun onNotificationItemClick(pos: Int) {
+
+        }
+    }
+
+    fun getnotificationdata(){
+        notificationlist.clear()
+        getnotificationtopup()
+        getnotificationtransfer()
+        getnotificationpayment()
+        getnotificationtransferfrom()
+        getnotificationwithdraw()
+    }
+    fun getnotificationtopup(){
+        val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
+
+        historyNotificationViewModel.getallCurrentBalanceWithTopUp().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                for (currentBalanceWithTopUp in it){
+                    Log.d(TAG, "onCreateViewCurrentBalanceWithTransfer: " + currentBalanceWithTopUp)
+                    currentBalanceWithTopUp.currentBalanceWithBalanceChangesID.currentbalance?.let { it1 ->
+                        currentBalanceWithTopUp.topUp?.let { it2 ->
+                            BalanceChangesWithCurrentBalance(
+                                it2,
+                                it1
+                            )
+                        }
+                    }?.let { it2 -> notificationlist.add(it2) }
+                }
+            }
+        })
+
+    }
+
+    fun getnotificationtransfer(){
+        val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
+        historyNotificationViewModel.getallCurrentBalanceWithTransfer().observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "getnotificationtransfer: " + it)
+            Log.d(TAG, "getnotificationtransfer: " + it.size)
+            if (it != null) {
+                for (currentBalanceWithTransfer in it){
+                    Log.d(TAG, "onCreateViewCurrentBalanceWithTransfer: " + currentBalanceWithTransfer)
+                    currentBalanceWithTransfer.currentBalanceWithBalanceChangesID.currentbalance?.let { it1 ->
+                        currentBalanceWithTransfer.transfer?.let { it2 ->
+                            BalanceChangesWithCurrentBalance(
+                                it2,
+                                it1
+                            )
+                        }
+                    }?.let { it2 -> notificationlist.add(it2) }
+                }
+            }
+        })
+    }
+
+    fun getnotificationpayment(){
+        val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
+
+        historyNotificationViewModel.getallCurrentBalanceWithPayment().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                for (currentBalanceWithPayment in it){
+                    currentBalanceWithPayment.currentBalanceWithBalanceChangesID.currentbalance?.let { it1 ->
+                        currentBalanceWithPayment.payment?.let { it2 ->
+                            BalanceChangesWithCurrentBalance(
+                                it2,
+                                it1
+                            )
+                        }
+                    }?.let { it2 -> notificationlist.add(it2) }
+                }
+            }
+        })
+
+    }
+
+    fun getnotificationtransferfrom(){
+        val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
+        historyNotificationViewModel.getallCurrentBalanceWithTransferFrom().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                for (currentBalanceWithTransferFrom in it){
+                    currentBalanceWithTransferFrom.currentBalanceWithBalanceChangesID.currentbalance?.let { it1 ->
+                        currentBalanceWithTransferFrom.transferFrom?.let { it2 ->
+                            BalanceChangesWithCurrentBalance(
+                                it2,
+                                it1
+                            )
+                        }
+                    }?.let { it2 -> notificationlist.add(it2) }
+                }
+            }
+        })
+    }
+
+    fun getnotificationwithdraw(){
+        val historyNotificationViewModel = (activity as MainActivity).historyNotificationViewModel
+
+        historyNotificationViewModel.getallCurrentBalanceWithWithDraw().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                for (currentBalanceWithWithDraw in it){
+                    currentBalanceWithWithDraw.currentBalanceWithBalanceChangesID.currentbalance?.let { it1 ->
+                        currentBalanceWithWithDraw.withDraw?.let { it2 ->
+                            BalanceChangesWithCurrentBalance(
+                                it2,
+                                it1
+                            )
+                        }
+                    }?.let { it2 -> notificationlist.add(it2) }
+                }
+            }
+        })
+
     }
 }

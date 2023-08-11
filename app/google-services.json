@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "957997012631-hk32mlbs9u14cqcrlb1odv6m6ttlmjsh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.doan",
+            "certificate_hash": "5ad97378f8083816581ed87b6602f7c8637682ea"
+          }
+        },
+        {
           "client_id": "957997012631-vr29ljh65q1hc3o563d0j9f7opua45r6.apps.googleusercontent.com",
           "client_type": 3
         }

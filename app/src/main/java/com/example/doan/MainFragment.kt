@@ -1,36 +1,41 @@
 package com.example.doan
 
 
+
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
+
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.example.doan.AccountsandSettingFragment.Companion.TAG
 import com.example.doan.Adapters.ViewpagerAdapter
 import com.example.doan.Adapters.homeServiceAdapter
 import com.example.doan.ClicklistenerInterface.HomeServiceItemClickListener
 import com.example.doan.DataSource.LinkedBanks
 import com.example.doan.DataSource.service
 import com.example.doan.databinding.MainFragmentBinding
+import com.firebase.ui.auth.IdpResponse
+
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
-class MainFragment : Fragment(){
-    private var _binding: MainFragmentBinding?=null
+
+class MainFragment : Fragment() {
+    private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
-    private val db = Firebase.firestore
 
     var adapter: homeServiceAdapter? = null
     var vpadapter: ViewpagerAdapter? = null
@@ -38,21 +43,14 @@ class MainFragment : Fragment(){
     var images: ArrayList<Int>? = null
 
 
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
-
     override fun onResume() {
         super.onResume()
-        val bottomnavview =activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
-        if (bottomnavview != null) {
-            bottomnavview.visibility = View.VISIBLE
-        }
+        val mainViewModel = (activity as MainActivity).mainViewModel
+        mainViewModel.balance.observe(viewLifecycleOwner, Observer {
+            binding.balance = it.toString() + "đ"
+            Log.d(TAG, "onResume: " + it.toString())
+            binding.upperLayout.txthiddenbalance.text = it.toString()
+        })
 
     }
 
@@ -61,29 +59,40 @@ class MainFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = MainFragmentBinding.inflate(inflater,container,false)
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
         initData()
-        adapter = dataset?.let { homeServiceAdapter(it,itemClickListener) }
+        adapter = dataset?.let { homeServiceAdapter(it, itemClickListener) }
 
         binding.bottomLayout.servicesRecyclerview.adapter = adapter
 
-        binding.upperLayout.imgTopUp.setOnClickListener(){
+        binding.upperLayout.imgTopUp.setOnClickListener {
             val actiontopup = MainFragmentDirections.actionMainFragmentToMoneyInputFragment(
-               LinkedBanks()
+                LinkedBanks()
             )
-            view?.findNavController()?.navigate(actiontopup)
+            findNavController().navigate(actiontopup)
         }
 
-        binding.upperLayout.imgTransfer.setOnClickListener(){
+        val bottomnavview = activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+        if (bottomnavview != null) {
+            bottomnavview.visibility = View.VISIBLE
+        }
+
+        binding.upperLayout.imgTransfer.setOnClickListener {
             val actiontransfer = MainFragmentDirections.actionMainFragmentToContactsListFragment()
-            view?.findNavController()?.navigate(actiontransfer)
+            findNavController().navigate(actiontransfer)
         }
 
-        binding.upperLayout.imgWallet.setOnClickListener(){
+        binding.upperLayout.imgWallet.setOnClickListener {
             val actionwallet = MainFragmentDirections.actionMainFragmentToWalletFragment()
-            view?.findNavController()?.navigate(actionwallet)
+            findNavController().navigate(actionwallet)
         }
-        binding.toolbar.setTitle("")
+
+        binding.upperLayout.imgWithDraw.setOnClickListener {
+            val actionwithdraw =
+                MainFragmentDirections.actionMainFragmentToWithdrawBankslistFragment()
+            findNavController().navigate(actionwithdraw)
+        }
+        binding.toolbar.title = ""
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.upperLayout.arrowButton.setOnClickListener { view: View? ->
             // If the CardView is already expanded, set its visibility
@@ -111,7 +120,7 @@ class MainFragment : Fragment(){
 
 
 
-         binding.appBarlayout.addOnOffsetChangedListener(object : OnOffsetChangedListener {
+        binding.appBarlayout.addOnOffsetChangedListener(object : OnOffsetChangedListener {
             var isShow = true
             var scrollRange = -1
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -133,20 +142,17 @@ class MainFragment : Fragment(){
                 //binding.upperLayout.root.background.alpha = value
                 if (scrollRange + verticalOffset == 0) {
                     isShow = true
-                    (activity as AppCompatActivity).getSupportActionBar()?.show()
+                    (activity as AppCompatActivity).supportActionBar?.show()
 
                 } else if (isShow) {
-                    (activity as AppCompatActivity).getSupportActionBar()?.hide() //careful there should a space between double quote otherwise it wont work
+                    (activity as AppCompatActivity).supportActionBar
+                        ?.hide() //careful there should a space between double quote otherwise it wont work
                     isShow = false
                 }
             }
         })
 
-        val mainViewModel = (activity as MainActivity).mainViewModel
-        mainViewModel.balance.observe(viewLifecycleOwner, Observer {
-            binding.balance = it.toString() + "đ"
-            binding.upperLayout.txthiddenbalance.text = it.toString()
-        })
+
 
 
         binding.bottomLayout.servicesRecyclerview.layoutManager = GridLayoutManager(context, 4)
@@ -157,7 +163,8 @@ class MainFragment : Fragment(){
 
 
 
-        binding.bottomLayout.bannerviewpager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+        binding.bottomLayout.bannerviewpager.registerOnPageChangeCallback(object :
+            OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -165,10 +172,6 @@ class MainFragment : Fragment(){
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 changeColor()
-            }
-
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -182,34 +185,34 @@ class MainFragment : Fragment(){
     }
 
     fun changeColor() {
-        when (binding.bottomLayout.bannerviewpager.getCurrentItem()) {
+        when (binding.bottomLayout.bannerviewpager.currentItem) {
             0 -> {
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot1.setBackgroundColor(
                         it.getColor(R.color.orange)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot2.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot3.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot4.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
@@ -236,140 +239,140 @@ class MainFragment : Fragment(){
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
             }
             2 -> {
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot1.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot2.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot3.setBackgroundColor(
                         it.getColor(R.color.orange)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot4.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
             }
             3 -> {
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot1.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot2.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot3.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot4.setBackgroundColor(
                         it.getColor(R.color.orange)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
             }
             4 -> {
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot1.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot2.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot3.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot4.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.orange)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
             }
             5 -> {
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot1.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot2.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot3.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot4.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot5.setBackgroundColor(
                         it.getColor(R.color.grey)
                     )
                 }
-                context?.getResources()?.let {
+                context?.resources?.let {
                     binding.bottomLayout.imgdot6.setBackgroundColor(
                         it.getColor(R.color.orange)
                     )
@@ -378,28 +381,24 @@ class MainFragment : Fragment(){
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     private fun initData() {
         dataset = ArrayList<service>()
-        //dataset!!.add(service(R.drawable.shopeeicon, "Shopee"))
-        //dataset!!.add(service(R.drawable.shopeepayicon, "Shopeepay"))
-        //dataset!!.add(service(R.drawable.lazada, "lazada"))
-        //dataset!!.add(service(R.drawable.momoicon, "momo"))
-        //dataset!!.add(service(R.drawable.vnpayicon, "Vnpay"))
-        //dataset!!.add(service(R.drawable.zalopayicon, "Zalopay"))
+        dataset!!.add(service(R.drawable.shopeeicon, "Shopee"))
+        dataset!!.add(service(R.drawable.shopeepayicon, "Shopeepay"))
+        dataset!!.add(service(R.drawable.lazada, "lazada"))
+        dataset!!.add(service(R.drawable.momoicon, "momo"))
+        dataset!!.add(service(R.drawable.vnpayicon, "Vnpay"))
+        dataset!!.add(service(R.drawable.zalopayicon, "Zalopay"))
         dataset!!.add(service(R.drawable.mobiletopu, "Mobile-TopUp"))
-        //dataset!!.add(service(R.drawable.movieicon, "Movies"))
-        //dataset!!.add(service(R.drawable.paybillicon, "Pay Bills"))
-        //dataset!!.add(service(R.drawable.insurranceicon, "Insurrances"))
-        //dataset!!.add(service(R.drawable.flighticon, "Flight"))
-        //dataset!!.add(service(R.drawable.datatopup, "Data"))
-        //dataset!!.add(service(R.drawable.ahamove, "ahamove"))
-        //dataset!!.add(service(R.drawable.shopeefoodicon, "Shopee Food"))
-        //dataset!!.add(service(R.drawable.hotelicon, "Hotels"))
-        //dataset!!.add(service(R.drawable.menuicon, "More"))
+        dataset!!.add(service(R.drawable.movieicon, "Movies"))
+        dataset!!.add(service(R.drawable.paybillicon, "Pay Bills"))
+        dataset!!.add(service(R.drawable.insurranceicon, "Insurrances"))
+        dataset!!.add(service(R.drawable.flighticon, "Flight"))
+        dataset!!.add(service(R.drawable.datatopup, "Data"))
+        dataset!!.add(service(R.drawable.ahamove, "ahamove"))
+        dataset!!.add(service(R.drawable.shopeefoodicon, "Shopee Food"))
+        dataset!!.add(service(R.drawable.hotelicon, "Hotels"))
+        dataset!!.add(service(R.drawable.menuicon, "More"))
         images = ArrayList<Int>()
         images!!.add(R.drawable.shopeepaybanner1)
         images!!.add(R.drawable.shopeepaybanner2)
@@ -408,23 +407,49 @@ class MainFragment : Fragment(){
         images!!.add(R.drawable.shopeepaybanner5)
         images!!.add(R.drawable.shopeepaybanner6)
     }
+
     val itemClickListener = object : HomeServiceItemClickListener {
         override fun onItemClick(pos: Int) {
-            if(dataset?.get(pos)?.serviceName  == "Mobile-TopUp" ){
+            if (dataset?.get(pos)?.serviceName == "Mobile-TopUp") {
 
                 val mobileaction = MainFragmentDirections.actionMainFragmentToMobileDataFragment()
                 findNavController().navigate(mobileaction)
-                val bottomnavview =activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+                val bottomnavview =
+                    activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
                 if (bottomnavview != null) {
                     bottomnavview.visibility = View.GONE
                 }
-            }
-            else{
+            } else {
                 return
             }
         }
     }
 
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // TODO Listen to the result of the sign in process by filter for when
+        //  SIGN_IN_REQUEST_CODE is passed back. Start by having log statements to know
+        //  whether the user has signed in successfully
+        if (requestCode == AccountsandSettingFragment.SIGN_IN_REQUEST_CODE) {
+            val response = IdpResponse.fromResultIntent(data)
+            if (resultCode == Activity.RESULT_OK) {
+                // User successfully signed in.
+                Log.i(
+                    AccountsandSettingFragment.TAG,
+                    "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!"
+                )
+                val mainViewModel = (activity as MainActivity).mainViewModel
+                mainViewModel.mainviewmodelobserve()
+            } else {
+                // Sign in failed. If response is null, the user canceled the
+                // sign-in flow using the back button. Otherwise, check
+                // the error code and handle the error.
+                Log.i(
+                    AccountsandSettingFragment.TAG,
+                    "Sign in unsuccessful ${response?.error?.errorCode}"
+                )
+            }
+        }
+    }
 
 }

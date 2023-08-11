@@ -8,7 +8,7 @@
 
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/mobiledatatablayout"
+        android:id="@+id/historynotificationtablayout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
 
@@ -41,12 +41,13 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mobiledatatablayout">
+        app:layout_constraintTop_toBottomOf="@id/historynotificationtablayout">
 
         <androidx.appcompat.widget.SearchView
+            android:id="@+id/hisnotisearchview"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:visibility="invisible"/>
+            android:visibility="visible" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

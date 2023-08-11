@@ -1,5 +1,6 @@
 package com.example.doan.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
@@ -24,28 +25,31 @@ import com.example.doan.databinding.DataRecyclerviewItemBinding
 import com.example.doan.databinding.DateItemBinding
 import java.text.DecimalFormat
 
-class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataItemClickListener) : RecyclerView.Adapter<DataAdapter.DataItemViewHolder>()  {
-    lateinit var context : Context
+class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataItemClickListener) :
+    RecyclerView.Adapter<DataAdapter.DataItemViewHolder>() {
+    lateinit var context: Context
     var selectedItemPos = -1
     var lastItemSelectedPos = -1
-    inner class DataItemViewHolder(val binding: DataRecyclerviewItemBinding) :RecyclerView.ViewHolder(binding.root), OnClickListener {
-        fun bind(item : Data){
+
+    inner class DataItemViewHolder(val binding: DataRecyclerviewItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: Data) {
             binding.txtdataprice.text = item.value.toString()
             binding.txtdatadiscount.text = item.discount.toString()
-            val priceafterdiscount = item.value - (item.value * (item.discount.toDouble()/100))
+            val priceafterdiscount = item.value - (item.value * (item.discount.toDouble() / 100))
             val df = DecimalFormat("#,###")
-            val stringtospan = SpannableString("đ"+ df.format(priceafterdiscount.toInt()).toString())
-            stringtospan.setSpan(UnderlineSpan(),0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val stringtospan =
+                SpannableString("đ" + df.format(priceafterdiscount.toInt()).toString())
+            stringtospan.setSpan(UnderlineSpan(), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding.txtdatafinalprice.text = stringtospan
-            if(item.datacapacity< 1){
-                binding.rbpackofdata.setText(item.networlprovider+" "+ (item.datacapacity*1000).toInt()+" MB"+ ", " + item.duration+" days")
-            }
-            else{
-                binding.rbpackofdata.setText(item.networlprovider+" "+ item.datacapacity+" GB"+ ", " + item.duration+" days")
+            if (item.datacapacity < 1) {
+                binding.rbpackofdata.setText(item.networlprovider + " " + (item.datacapacity * 1000).toInt() + " MB" + ", " + item.duration + " days")
+            } else {
+                binding.rbpackofdata.setText(item.networlprovider + " " + item.datacapacity + " GB" + ", " + item.duration + " days")
             }
             binding.rbpackofdata.setOnClickListener({
                 selectedItemPos = bindingAdapterPosition
-                if(lastItemSelectedPos == -1)
+                if (lastItemSelectedPos == -1)
                     lastItemSelectedPos = selectedItemPos
                 else {
                     notifyItemChanged(lastItemSelectedPos)
@@ -59,7 +63,7 @@ class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataIte
         init {
             itemView.setOnClickListener {
                 selectedItemPos = bindingAdapterPosition
-                if(lastItemSelectedPos == -1)
+                if (lastItemSelectedPos == -1)
                     lastItemSelectedPos = selectedItemPos
                 else {
                     notifyItemChanged(lastItemSelectedPos)
@@ -69,7 +73,6 @@ class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataIte
                 onClick(itemView)
             }
         }
-
 
 
         fun defaultRb() {
@@ -91,20 +94,20 @@ class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataIte
     }
 
 
-
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DataItemViewHolder {
         context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
-            return DataItemViewHolder(DataRecyclerviewItemBinding.inflate(layoutInflater))
+        return DataItemViewHolder(DataRecyclerviewItemBinding.inflate(layoutInflater))
     }
 
 
     override fun onBindViewHolder(holder: DataItemViewHolder, position: Int) {
         holder.bind(mListData[position])
-        if(position == selectedItemPos)
+        if (position == selectedItemPos)
             holder.selectedRb()
         else {
             holder.defaultRb()
@@ -114,6 +117,6 @@ class DataAdapter(private val mListData: ArrayList<Data>, val mCallback: DataIte
 
 
     override fun getItemCount(): Int {
-        return  mListData.size
+        return mListData.size
     }
 }

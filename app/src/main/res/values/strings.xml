@@ -16,4 +16,5 @@
     <string name="doan_notification_channel_id">doan_notification_id</string>
     <string name="channel_name">doan_noti</string>
     <string name="channel_description">"this is a doan app notification "</string>
+    <string name="result_not_found">"Scan Failed, Please Rescan the QR code"</string>
 </resources>

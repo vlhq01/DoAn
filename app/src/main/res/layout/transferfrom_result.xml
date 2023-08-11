@@ -64,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -161,9 +162,9 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <ImageView
         android:id="@+id/imgtransferresulthomeicon"
         android:layout_width="77dp"

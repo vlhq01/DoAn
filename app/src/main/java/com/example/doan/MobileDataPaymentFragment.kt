@@ -1,5 +1,6 @@
 package com.example.doan
 
+import android.app.ProgressDialog
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -20,6 +21,7 @@ import com.example.doan.DataSource.Payment
 import com.example.doan.DataSource.TopUp
 import com.example.doan.databinding.MobileDataPaymentBinding
 import com.example.doan.databinding.MobileDataTopupBinding
+import com.example.doan.utils.LoadingDialog
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
@@ -33,14 +35,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class MobileDataPaymentFragment : Fragment() {
-    private var _binding: MobileDataPaymentBinding?=null
+    private var _binding: MobileDataPaymentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var mobile : Mobile
-    private lateinit var data : Data
+    private lateinit var mobile: Mobile
+    private lateinit var data: Data
     private lateinit var phonenumber: String
-    private lateinit var carrier:String
+    private lateinit var carrier: String
     private lateinit var functions: FirebaseFunctions
     private var priceafterdiscount: Int = 0
+    private lateinit var loader: LoadingDialog
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +61,7 @@ class MobileDataPaymentFragment : Fragment() {
                 phonenumber = it.getString("phonenumber").toString()
             }
             if (it != null) {
-                carrier= it.getString("carrier").toString()
+                carrier = it.getString("carrier").toString()
             }
         }
     }
@@ -69,36 +72,46 @@ class MobileDataPaymentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = MobileDataPaymentBinding.inflate(inflater,container,false)
+        _binding = MobileDataPaymentBinding.inflate(inflater, container, false)
         functions = Firebase.functions
+        loader = LoadingDialog(requireContext())
         binding.txtmdpaymentcarriername.text = carrier
+        when(carrier){
+            "Viettel" -> binding.imgcarriericonpayment.setImageDrawable(context?.getDrawable(R.drawable.viettel))
+            "Vinaphone" -> binding.imgcarriericonpayment.setImageDrawable(context?.getDrawable(R.drawable.vinaphone))
+            "Mobiphone" -> binding.imgcarriericonpayment.setImageDrawable(context?.getDrawable(R.drawable.mobiphone))
+        }
         binding.txtmdpaymentphonenumber.text = phonenumber
-
+        binding.mobiledatapaymenttoolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         if (mobile.value != 0) {
             binding.txtcontent.text = "Mobile card: " + carrier + " " + mobile.value
-            binding.txtdiscount.text = mobile.discount.toString()+"%"
+            binding.txtdiscount.text = mobile.discount.toString() + "%"
             binding.txtsubtotal.text = mobile.value.toString()
-            priceafterdiscount = (mobile.value - (mobile.value * (mobile.discount.toDouble()/100))).toInt()
+            priceafterdiscount =
+                (mobile.value - (mobile.value * (mobile.discount.toDouble() / 100))).toInt()
             val df = DecimalFormat("#,###")
-            val stringtospan = SpannableString("đ"+ df.format(priceafterdiscount.toInt()).toString())
-            stringtospan.setSpan(UnderlineSpan(),5,6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val stringtospan =
+                SpannableString("đ" + df.format(priceafterdiscount.toInt()).toString())
+            stringtospan.setSpan(UnderlineSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding.txtpnfinalprice.text = stringtospan
             binding.txttotalprice.text = stringtospan
         }
-        if(data.value != 0){
+        if (data.value != 0) {
             binding.txtcontent.text =
                 "Data card: " + carrier + " " + data.datacapacity + " GB " + data.duration + " Days"
-            binding.txtdiscount.text = data.discount.toString()+"%"
+            binding.txtdiscount.text = data.discount.toString() + "%"
             binding.txtsubtotal.text = data.value.toString()
-            priceafterdiscount = (data.value - (data.value * (data.discount.toDouble()/100))).toInt()
+            priceafterdiscount =
+                (data.value - (data.value * (data.discount.toDouble() / 100))).toInt()
             val df = DecimalFormat("#,###")
-            val stringtospan = SpannableString("đ"+ df.format(priceafterdiscount.toInt()).toString())
-            stringtospan.setSpan(UnderlineSpan(),5,6,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val stringtospan =
+                SpannableString("đ" + df.format(priceafterdiscount.toInt()).toString())
+            stringtospan.setSpan(UnderlineSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding.txtpnfinalprice.text = stringtospan
             binding.txttotalprice.text = stringtospan
         }
 
-        binding.btnpaynow.setOnClickListener({ showBottomSheetDialog()})
+        binding.btnpaynow.setOnClickListener({ showBottomSheetDialog() })
         val view = binding.root
 
         return view
@@ -122,19 +135,19 @@ class MobileDataPaymentFragment : Fragment() {
                 //TransferMoney( binding.edtTransferAmount.text.toString().toInt() , receiverId )
 
                 val mainViewModel = (activity as MainActivity).mainViewModel
-                if(otp == mainViewModel.passcode.value){
+                if (otp == mainViewModel.passcode.value) {
+                    loader.show()
                     val odersn = getodersn()
                     val referenceid = getreferenceid()
                     val merchantid = getmerchantid()
                     val date = getdate()
-                    MakePayment(priceafterdiscount,odersn,referenceid,merchantid,date)
+                    MakePayment(priceafterdiscount, odersn, referenceid, merchantid, date)
 
                     bottomSheetDialog.dismiss()
-                }
-                else{
+                } else {
                     otpTextView.showError()
-                    otpTextView.otp= ""
-                    Toast.makeText(context,"Wrong PassCode", Toast.LENGTH_LONG)
+                    otpTextView.otp = ""
+                    Toast.makeText(context, "Wrong PassCode", Toast.LENGTH_LONG)
                 }
             }
         }
@@ -142,7 +155,13 @@ class MobileDataPaymentFragment : Fragment() {
 
     }
 
-    private fun MakePayment(amount: Int, odersn: String, referenceid: String, merchantid: String, date : String): Task<String> {
+    private fun MakePayment(
+        amount: Int,
+        odersn: String,
+        referenceid: String,
+        merchantid: String,
+        date: String
+    ): Task<String> {
         val data = hashMapOf(
             "Amount" to amount,
             "OderSN" to odersn,
@@ -155,36 +174,38 @@ class MobileDataPaymentFragment : Fragment() {
                 val result = task.result.data as String
                 result
             }.addOnCompleteListener {
-                val action =  MobileDataPaymentFragmentDirections.actionMobileDataPaymentFragmentToPaymentResultFragment(
-                    Payment(amount,date,odersn,merchantid,referenceid)
-                )
+                loader.dismiss()
+                val action =
+                    MobileDataPaymentFragmentDirections.actionMobileDataPaymentFragmentToPaymentResultFragment(
+                        Payment(amount, date, odersn, merchantid, referenceid)
+                    )
                 findNavController().navigate(action)
             }
     }
 
-    fun getodersn() : String {
-        val allowedChars =  ('0'..'9')
+    fun getodersn(): String {
+        val allowedChars = ('0'..'9')
         return (1..10)
             .map { allowedChars.random() }
             .joinToString("")
     }
 
-    fun getreferenceid() : String {
-        val allowedChars =  ('0'..'9')
+    fun getreferenceid(): String {
+        val allowedChars = ('0'..'9')
         return (1..15)
             .map { allowedChars.random() }
             .joinToString("")
     }
 
-    fun getmerchantid() : String {
-        val allowedChars =  ('0'..'9') + ('a'..'z')
+    fun getmerchantid(): String {
+        val allowedChars = ('0'..'9') + ('a'..'z')
         return (1..20)
             .map { allowedChars.random() }
             .joinToString("")
     }
 
-    fun getdate() : String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    fun getdate(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val current = LocalDateTime.now().format(formatter)
         return current
     }

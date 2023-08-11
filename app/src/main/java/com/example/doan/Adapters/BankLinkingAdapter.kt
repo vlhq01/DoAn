@@ -12,13 +12,15 @@ import com.example.doan.DataSource.Banks
 import com.example.doan.databinding.BankslistitemBinding
 import java.util.ArrayList
 
-class BankLinkingAdapter(private val context: BankListFragment,
-                         private val dataset: ArrayList<Banks>?, var  mcallback : BanklistItemClickListener
+class BankLinkingAdapter(
+    private val context: BankListFragment,
+    private val dataset: ArrayList<Banks>?, var mcallback: BanklistItemClickListener
 ) : RecyclerView.Adapter<BankLinkingAdapter.bankLinkingViewHolder>() {
 
-    inner class bankLinkingViewHolder(val binding : BankslistitemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener {
+    inner class bankLinkingViewHolder(val binding: BankslistitemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
 
-        fun bind(item : Banks){
+        fun bind(item: Banks) {
             Glide.with(context).load(item.imgUrl).into(binding.imgBanks)
             binding.tvBanksName.text = item.bankname
 
@@ -37,7 +39,10 @@ class BankLinkingAdapter(private val context: BankListFragment,
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BankLinkingAdapter.bankLinkingViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BankLinkingAdapter.bankLinkingViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
 
         return bankLinkingViewHolder(BankslistitemBinding.inflate(layoutInflater))
@@ -52,8 +57,6 @@ class BankLinkingAdapter(private val context: BankListFragment,
     override fun getItemCount(): Int {
         return dataset?.size ?: 0
     }
-
-
 
 
 }

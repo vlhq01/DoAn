@@ -13,8 +13,10 @@ import com.example.doan.ClicklistenerInterface.HomeServiceItemClickListener
 import com.example.doan.R
 
 
-class homeServiceAdapter(private var mListData: ArrayList<service>,var  mcallback : HomeServiceItemClickListener)
-    : RecyclerView.Adapter<homeServiceAdapter.serviceItemViewHolder>() {
+class homeServiceAdapter(
+    private var mListData: ArrayList<service>,
+    var mcallback: HomeServiceItemClickListener
+) : RecyclerView.Adapter<homeServiceAdapter.serviceItemViewHolder>() {
 
     private var mContext: Context? = null
 
@@ -50,9 +52,11 @@ class homeServiceAdapter(private var mListData: ArrayList<service>,var  mcallbac
         return if (mListData != null) mListData!!.size else 0
     }
 
-    inner class serviceItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), OnClickListener {
+    inner class serviceItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        OnClickListener {
         var tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         var imgService: ImageView = itemView.findViewById(R.id.imgservice)
+
         init {
             itemView.setOnClickListener(this)
         }

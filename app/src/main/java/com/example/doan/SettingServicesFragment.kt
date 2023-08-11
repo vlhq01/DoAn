@@ -5,31 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.doan.databinding.ReenterPasscodeBinding
 import com.example.doan.databinding.SettingServiceBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import `in`.aabhasjindal.otptextview.OTPListener
 import `in`.aabhasjindal.otptextview.OtpTextView
 
-class SettingServicesFragment: Fragment() {
-    private var _binding: SettingServiceBinding?=null
+class SettingServicesFragment : Fragment() {
+    private var _binding: SettingServiceBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = SettingServiceBinding.inflate(inflater,container,false)
+        _binding = SettingServiceBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.PasscodeChangingConstraintLayout.setOnClickListener {
             showBottomSheetDialog()
         }
+        var navBar = activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+        if (navBar != null) {
+            navBar.isVisible = false
+        }
+        binding.settingservicetoolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         return view
     }
 
@@ -50,15 +54,15 @@ class SettingServicesFragment: Fragment() {
 
                 //TransferMoney( binding.edtTransferAmount.text.toString().toInt() , receiverId )
                 val mainViewModel = (activity as MainActivity).mainViewModel
-                if(otp == mainViewModel.passcode.value){
-                    val action =  SettingServicesFragmentDirections.actionSettingServicesFragmentToEnterNewPassCodeFragment()
+                if (otp == mainViewModel.passcode.value) {
+                    val action =
+                        SettingServicesFragmentDirections.actionSettingServicesFragmentToEnterNewPassCodeFragment()
                     findNavController().navigate(action)
                     bottomSheetDialog.dismiss()
-                }
-                else{
+                } else {
                     otpTextView.showError()
-                    otpTextView.otp= ""
-                    Toast.makeText(context,"Wrong PassCode", Toast.LENGTH_LONG)
+                    otpTextView.otp = ""
+                    Toast.makeText(context, "Wrong PassCode", Toast.LENGTH_LONG)
                 }
 
 

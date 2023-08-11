@@ -5,6 +5,6 @@ import com.example.doan.DataSource.Mobile
 
 interface MobileDataChangeBtnColor {
     fun onMobileDataChangeButtonColor()
-    fun onLoadMobileDatatoButton(mobile : Mobile)
-    fun onLoadMobileDatatoButton(data : Data)
+    fun onLoadMobileDatatoButton(mobile: Mobile)
+    fun onLoadMobileDatatoButton(data: Data)
 }

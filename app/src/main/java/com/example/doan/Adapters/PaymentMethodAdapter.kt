@@ -13,12 +13,17 @@ import com.example.doan.DataSource.BalanceChanges
 import com.example.doan.DataSource.LinkedBanks
 import com.example.doan.databinding.PaymentMethodrvItemBinding
 
-class PaymentMethodAdapter(private var mListData: ArrayList<LinkedBanks>, var  mcallback : PaymentMethodOnClickListener):
+class PaymentMethodAdapter(
+    private var mListData: ArrayList<LinkedBanks>,
+    var mcallback: PaymentMethodOnClickListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    lateinit var context : Context
-    inner class PaymentMethosViewHolder(val binding: PaymentMethodrvItemBinding) : RecyclerView.ViewHolder(binding.root), OnClickListener{
+    lateinit var context: Context
 
-        fun bind(item : LinkedBanks){
+    inner class PaymentMethosViewHolder(val binding: PaymentMethodrvItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+
+        fun bind(item: LinkedBanks) {
             Glide.with(context).load(item.imgurl).into(binding.imgbankmethod)
             binding.txtbankmethosname.text = item.bankname
             binding.txtaccountnumber.text = item.banknumber

@@ -17,15 +17,16 @@ import com.example.doan.databinding.TransferresultBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class TransferResultFragment : Fragment() {
-    private var _binding: TransferresultBinding?=null
-    private val binding get()  = _binding!!
-    private var  data : Transfer = Transfer()
+    private var _binding: TransferresultBinding? = null
+    private val binding get() = _binding!!
+    private var data: Transfer = Transfer()
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments.let {
-            if(it!= null){
-                data = it.getParcelable("transferinfo" , Transfer::class.java)!!
+            if (it != null) {
+                data = it.getParcelable("transferinfo", Transfer::class.java)!!
                 Log.d(TAG, "onCreate: " + data.toString())
             }
 
@@ -38,14 +39,19 @@ class TransferResultFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = TransferresultBinding.inflate(inflater,container,false)
-        binding.txttfamount.text = data.amount.toString()
+        _binding = TransferresultBinding.inflate(inflater, container, false)
+        binding.txttfamount.text = "-" +data.amount.toString() + "đ"
         binding.txttfdate.text = data.date
         binding.txttfreceiverdt.text = data.receivername
         binding.txttfodersndt.text = data.odersn
         binding.txttfrefiddt.text = data.referenceid
+        var navBar = activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+        if (navBar != null) {
+            navBar.isVisible = false
+        }
         binding.imgtransferhomeicon.setOnClickListener({
-            val action = TransferResultFragmentDirections.actionTransferResultFragmentToMainFragment()
+            val action =
+                TransferResultFragmentDirections.actionTransferResultFragmentToMainFragment()
             findNavController().navigate(action)
         })
         val view = binding.root

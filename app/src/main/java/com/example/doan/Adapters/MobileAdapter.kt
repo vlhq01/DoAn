@@ -18,25 +18,31 @@ import com.example.doan.databinding.MobileRecyclerviewItemBinding
 import java.text.DecimalFormat
 
 
-class MobileAdapter(private val mListData: ArrayList<Mobile>, val mCallback:MobileItemClickListener) : RecyclerView.Adapter<MobileAdapter.MobileItemViewHolder>() {
+class MobileAdapter(
+    private val mListData: ArrayList<Mobile>,
+    val mCallback: MobileItemClickListener
+) : RecyclerView.Adapter<MobileAdapter.MobileItemViewHolder>() {
     var selectedItemPos = -1
     var lastItemSelectedPos = -1
-    lateinit var context : Context
-    inner class MobileItemViewHolder(val binding: MobileRecyclerviewItemBinding) :RecyclerView.ViewHolder(binding.root), OnClickListener {
-       fun bind(item : Mobile){
-           binding.txtmobilevalue.text = item.value.toString()
-           binding.txtmobilediscount.text = item.discount.toString()
-           val priceafterdiscount = item.value - (item.value * (item.discount.toDouble()/100))
-           val df = DecimalFormat("#,###")
-           val stringtospan = SpannableString("Pay: đ"+ df.format(priceafterdiscount.toInt()).toString())
-           stringtospan.setSpan(UnderlineSpan(),5,6,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-           binding.txtmobilefinalprice.text = stringtospan
-       }
+    lateinit var context: Context
+
+    inner class MobileItemViewHolder(val binding: MobileRecyclerviewItemBinding) :
+        RecyclerView.ViewHolder(binding.root), OnClickListener {
+        fun bind(item: Mobile) {
+            binding.txtmobilevalue.text = item.value.toString()
+            binding.txtmobilediscount.text = item.discount.toString()
+            val priceafterdiscount = item.value - (item.value * (item.discount.toDouble() / 100))
+            val df = DecimalFormat("#,###")
+            val stringtospan =
+                SpannableString("Pay: đ" + df.format(priceafterdiscount.toInt()).toString())
+            stringtospan.setSpan(UnderlineSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            binding.txtmobilefinalprice.text = stringtospan
+        }
 
         init {
             itemView.setOnClickListener {
                 selectedItemPos = bindingAdapterPosition
-                if(lastItemSelectedPos == -1)
+                if (lastItemSelectedPos == -1)
                     lastItemSelectedPos = selectedItemPos
                 else {
                     notifyItemChanged(lastItemSelectedPos)
@@ -69,13 +75,13 @@ class MobileAdapter(private val mListData: ArrayList<Mobile>, val mCallback:Mobi
     ): MobileItemViewHolder {
         context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
-        return  MobileItemViewHolder(MobileRecyclerviewItemBinding.inflate(layoutInflater))
+        return MobileItemViewHolder(MobileRecyclerviewItemBinding.inflate(layoutInflater))
     }
 
 
     override fun onBindViewHolder(holder: MobileItemViewHolder, position: Int) {
         holder.bind(item = mListData[position])
-        if(position == selectedItemPos)
+        if (position == selectedItemPos)
             holder.selectedBg()
         else {
             holder.defaultBg()

@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/transferitemcsll"
         android:layout_width="fill_parent"
-        android:layout_height="130dp"
-        >
+        android:layout_height="130dp">
 
         <ImageView
             android:id="@+id/imghistorytransfer"

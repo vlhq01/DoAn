@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_mainFragment_to_notificationsFragment"
             app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_withdrawBankslistFragment"
+            app:destination="@id/withdrawBankslistFragment" />
 
     </fragment>
 
@@ -49,7 +52,7 @@
         android:id="@+id/notificationsFragment"
         android:name="com.example.doan.NotificationsFragment"
         android:label="NotificationsFragment"
-        tools:layout="@layout/notifications_fragment">
+        tools:layout="@layout/history_notifications_fragments">
         <action
             android:id="@+id/action_notificationsFragment_to_transferResultFragment"
             app:destination="@id/transferResultFragment" />
@@ -62,16 +65,16 @@
         <action
             android:id="@+id/action_notificationsFragment_to_transferFromResultFragment"
             app:destination="@id/transferFromResultFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_withDrawResuktFragment"
+            app:destination="@id/withDrawResuktFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountsandSettingFragment"
         android:name="com.example.doan.AccountsandSettingFragment"
         android:label="AccountsandSettingFragment"
         tools:layout="@layout/accounts_and_setting_fragment">
-        <action
-            android:id="@+id/action_accountsandSettingFragment_to_signInFragment"
-            app:destination="@id/signInFragment"
-            app:popUpTo="@id/accountsandSettingFragment" />
+
         <action
             android:id="@+id/action_accountsandSettingFragment_to_settingServicesFragment"
             app:destination="@id/settingServicesFragment" />
@@ -101,11 +104,7 @@
             app:destination="@id/transferResultFragment" />
 
     </fragment>
-    <fragment
-        android:id="@+id/signInFragment"
-        android:name="com.example.doan.SignInFragment"
-        android:label="SignInFragment"
-        tools:layout="@layout/sign_in"/>
+
     <fragment
         android:id="@+id/walletFragment"
         android:name="com.example.doan.WalletFragment"
@@ -165,7 +164,9 @@
             app:argType="com.example.doan.DataSource.Transfer" />
         <action
             android:id="@+id/action_transferResultFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/topUpResultFragment"
@@ -177,7 +178,9 @@
             app:argType="com.example.doan.DataSource.TopUp" />
         <action
             android:id="@+id/action_topUpResultFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/paymentResultFragment"
@@ -189,7 +192,9 @@
             app:argType="com.example.doan.DataSource.Payment" />
         <action
             android:id="@+id/action_paymentResultFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/addBankDetailFragment"
@@ -201,7 +206,9 @@
             app:argType="com.example.doan.DataSource.Banks" />
         <action
             android:id="@+id/action_addBankDetailFragment_to_walletFragment"
-            app:destination="@id/walletFragment" />
+            app:destination="@id/walletFragment"
+            app:popUpTo="@id/walletFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/settingServicesFragment"
@@ -241,6 +248,11 @@
         <argument
             android:name="transferfrominfo"
             app:argType="com.example.doan.DataSource.TransferFrom" />
+        <action
+            android:id="@+id/action_transferFromResultFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
@@ -254,6 +266,56 @@
             app:popUpToInclusive="true" >
 
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/qrFragment"
+        android:name="com.example.doan.QrFragment"
+        android:label="QrFragment"
+        tools:layout="@layout/qr_fragment">
+        <action
+            android:id="@+id/action_qrFragment_to_moneyTransferFragment"
+            app:destination="@id/moneyTransferFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestFragment"
+        android:name="com.example.doan.RequestFragment"
+        android:label="RequestFragment"
+        tools:layout="@layout/request_fragment"/>
+    <fragment
+        android:id="@+id/withdrawBankslistFragment"
+        android:name="com.example.doan.WithdrawBankslistFragment"
+        android:label="WithdrawBankslistFragment"
+        tools:layout="@layout/moneywithdrawbanklist">
+        <action
+            android:id="@+id/action_withdrawBankslistFragment_to_withDrawFragment"
+            app:destination="@id/withDrawFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/withDrawFragment"
+        android:name="com.example.doan.WithDrawFragment"
+        android:label="WithDrawFragment"
+        tools:layout="@layout/withdrawfragment">
+        <argument
+            android:name="withdrawbank"
+            app:argType="com.example.doan.DataSource.LinkedBanks" />
+        <action
+            android:id="@+id/action_withDrawFragment_to_withDrawResuktFragment"
+            app:destination="@id/withDrawResuktFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/withDrawResuktFragment"
+        android:name="com.example.doan.WithDrawResuktFragment"
+        android:label="WithDrawResuktFragment"
+        tools:layout="@layout/withdrawresult">
+        <argument
+            android:name="withdrawinfo"
+            app:argType="com.example.doan.DataSource.WithDraw" />
+        <action
+            android:id="@+id/action_withDrawResuktFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-      <variable
-          name="balance"
-          type="String" />
+
+        <variable
+            name="balance"
+            type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -35,7 +36,7 @@
                     layout="@layout/upper_layout"
                     app:layout_collapseMode="parallax"
                     android:id="@+id/upper_layout"
-                    balance="@{balance}"/>
+                    balance="@{balance}" />
 
 
                 <androidx.appcompat.widget.Toolbar

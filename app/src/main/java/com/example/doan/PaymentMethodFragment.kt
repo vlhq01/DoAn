@@ -21,39 +21,39 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class PaymentMethodFragment : Fragment() {
-    private val db = Firebase.firestore
-    private var _binding: PaymentMethodBinding?=null
+    private var _binding: PaymentMethodBinding? = null
     private val binding get() = _binding!!
-    var paymentmothodlist : MutableList<LinkedBanks> = mutableListOf()
+    var paymentmothodlist: MutableList<LinkedBanks> = mutableListOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = PaymentMethodBinding.inflate(inflater,container,false)
+        _binding = PaymentMethodBinding.inflate(inflater, container, false)
         val view = binding.root
-        binding.paymentmethodrv.layoutManager = LinearLayoutManager(this.context,
-            LinearLayoutManager.VERTICAL,false)
+        binding.paymentmethodrv.layoutManager = LinearLayoutManager(
+            this.context,
+            LinearLayoutManager.VERTICAL, false
+        )
         val linkedBanksListViewModel = (activity as MainActivity).linkedBanksListViewModel
         linkedBanksListViewModel.linkedbankslist.observe(viewLifecycleOwner, Observer {
             paymentmothodlist = it
-            binding.paymentmethodrv.adapter = PaymentMethodAdapter(paymentmothodlist as ArrayList<LinkedBanks>,paymentMethodOnClickListener)
+            binding.paymentmethodrv.adapter = PaymentMethodAdapter(
+                paymentmothodlist as ArrayList<LinkedBanks>,
+                paymentMethodOnClickListener
+            )
         })
+        binding.paymentmethodtoolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         return view
     }
+
     val paymentMethodOnClickListener = object : PaymentMethodOnClickListener {
         override fun onPaymentMethodClickListener(pos: Int) {
-            val action = PaymentMethodFragmentDirections.actionPaymentMethodFragmentToMoneyInputFragment(
-                paymentmothodlist[pos]
-            )
+            val action =
+                PaymentMethodFragmentDirections.actionPaymentMethodFragmentToMoneyInputFragment(
+                    paymentmothodlist[pos]
+                )
             findNavController().navigate(action)
         }
     }

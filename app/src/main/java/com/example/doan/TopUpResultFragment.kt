@@ -7,41 +7,61 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
+import androidx.databinding.adapters.ImageViewBindingAdapter.setImageDrawable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.doan.DataSource.TopUp
 import com.example.doan.DataSource.Transfer
 import com.example.doan.databinding.TopupresultBinding
 import com.example.doan.databinding.TransferresultBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class TopUpResultFragment : Fragment() {
-    private var _binding: TopupresultBinding?=null
+    private var _binding: TopupresultBinding? = null
     private val binding get() = _binding!!
-    private var data : TopUp = TopUp()
+    private var data: TopUp = TopUp()
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments.let {
-            if(it!= null){
-                data = it.getParcelable("topupinfo" , TopUp::class.java)!!
+            if (it != null) {
+                data = it.getParcelable("topupinfo", TopUp::class.java)!!
                 Log.d(AccountsandSettingFragment.TAG, "onCreate: " + data.toString())
             }
 
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = TopupresultBinding.inflate(inflater,container,false)
-        binding.txttopupamount.text = data.amount.toString()
+        _binding = TopupresultBinding.inflate(inflater, container, false)
+        binding.txttopupamount.text = "+" + data.amount.toString()+ "đ"
+        context?.resources?.let { binding.txttopupamount.setTextColor(it.getColor(R.color.green)) }
         binding.txttopupdate.text = data.date
         binding.txttopupbankname.text = data.bank
-        if(binding.txttopupbankname.text == "BIDV"){
-            binding.imgtopupbankicon.setImageResource(R.drawable.bidv)
+        var navBar = activity?.findViewById<BottomNavigationView>(R.id.bottomnavigation)
+        if (navBar != null) {
+            navBar.isVisible = false
+        }
+        if (data.bank == "BIDV") {
+            binding.imgtopupbankicon.setImageDrawable(context?.resources?.getDrawable(R.drawable.bidv))
+        }
+
+        if (data.bank == "Agribank") {
+            binding.imgtopupbankicon.setImageDrawable(context?.resources?.getDrawable(R.drawable.agribank))
+        }
+        if (data.bank == "Vietcombank") {
+            binding.imgtopupbankicon.setImageDrawable(context?.resources?.getDrawable(R.drawable.vietcambank))
+        }
+
+        if (data.bank == "Viettinbank") {
+            binding.imgtopupbankicon.setImageDrawable(context?.resources?.getDrawable(R.drawable.viettinbank))
         }
         binding.imgtopuphomeicon.setOnClickListener({
             val action = TopUpResultFragmentDirections.actionTopUpResultFragmentToMainFragment()

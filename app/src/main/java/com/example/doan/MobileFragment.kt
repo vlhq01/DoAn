@@ -17,16 +17,10 @@ import com.example.doan.DataSource.Mobile
 
 import com.example.doan.databinding.MobileTopupFragmentBinding
 
-class MobileFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor):Fragment() {
-    private var _binding: MobileTopupFragmentBinding?=null
+class MobileFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor) : Fragment() {
+    private var _binding: MobileTopupFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var dataset : MutableList<Mobile>
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-
-
-    }
+    private lateinit var dataset: MutableList<Mobile>
 
 
     override fun onCreateView(
@@ -34,27 +28,30 @@ class MobileFragment(val mobileDataChangeBtnColor: MobileDataChangeBtnColor):Fra
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = MobileTopupFragmentBinding.inflate(inflater,container,false)
+        _binding = MobileTopupFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
         dataset = mutableListOf<Mobile>()
-        dataset.add(Mobile(10000,6))
-        dataset.add(Mobile(20000,4))
-        dataset.add(Mobile(30000,6))
-        dataset.add(Mobile(50000,1))
-        dataset.add(Mobile(100000,6))
-        dataset.add(Mobile(200000,4))
-        dataset.add(Mobile(300000,6))
-        dataset.add(Mobile(500000,1))
-        binding.mobilerecyclerview.layoutManager = GridLayoutManager(this.context,
-            3, RecyclerView.VERTICAL,false)
-        binding.mobilerecyclerview.adapter = MobileAdapter(dataset as ArrayList<Mobile>,mobileItemClickListener)
+        dataset.add(Mobile(10000, 6))
+        dataset.add(Mobile(20000, 4))
+        dataset.add(Mobile(30000, 6))
+        dataset.add(Mobile(50000, 1))
+        dataset.add(Mobile(100000, 6))
+        dataset.add(Mobile(200000, 4))
+        dataset.add(Mobile(300000, 6))
+        dataset.add(Mobile(500000, 1))
+        binding.mobilerecyclerview.layoutManager = GridLayoutManager(
+            this.context,
+            3, RecyclerView.VERTICAL, false
+        )
+        binding.mobilerecyclerview.adapter =
+            MobileAdapter(dataset as ArrayList<Mobile>, mobileItemClickListener)
 
         return view
     }
 
     val mobileItemClickListener = object : MobileItemClickListener {
         override fun onMobileItemItemClick(pos: Int) {
-             mobileDataChangeBtnColor.onMobileDataChangeButtonColor()
+            mobileDataChangeBtnColor.onMobileDataChangeButtonColor()
             mobileDataChangeBtnColor.onLoadMobileDatatoButton(dataset[pos])
         }
     }

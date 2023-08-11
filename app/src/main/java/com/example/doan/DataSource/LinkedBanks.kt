@@ -5,7 +5,7 @@ import androidx.annotation.DrawableRes
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class LinkedBanks (
+data class LinkedBanks(
     var imgurl: String,
 
     var bankname: String,
@@ -14,6 +14,6 @@ data class LinkedBanks (
 
     var ownername: String
 
-    ) : Parcelable {
-    constructor(): this("","","","")
+) : Parcelable {
+    constructor() : this("", "", "", "")
 }
