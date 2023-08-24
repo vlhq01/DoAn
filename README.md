@@ -98,6 +98,16 @@ and authentication
   <img src="https://github.com/vlhq01/DoAn/assets/113295468/84dab517-e433-45d3-b615-206fbb8f2889" alt="Main Screen" width="200" heighth="200"/>
 </p>
 
+10 history/notifications list
+<p align="center">
+  <img src="https://github.com/vlhq01/DoAn/assets/113295468/559a040e-6d78-4b2d-ace9-b9d9ee9fab82" alt="Main Screen" width="200" heighth="200"/>
+  <img src="https://github.com/vlhq01/DoAn/assets/113295468/f3a4bf76-2515-40ed-a015-a365fa3bab2a" alt="Main Screen" width="200" heighth="200"/>
+  <img src="https://github.com/vlhq01/DoAn/assets/113295468/06f67095-e951-48b0-bfac-5a335461bbe4" alt="Main Screen" width="200" heighth="200"/>
+  <img src="https://github.com/vlhq01/DoAn/assets/113295468/ee97173d-c831-4b1b-af00-b53a9d24bdc6" alt="Main Screen" width="200" heighth="200"/>
+  
+</p>
+
+
 
 ## Toools
 -Firebase
