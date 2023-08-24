@@ -111,10 +111,6 @@ class HistoryNotificationViewModel(application: MyApplication, val notificationR
                                         temp.add(BalanceChangesSort(withdraw, withdraw.date))
                                     }
                                 }
-                                BalanceChanges.TYPE_WITHDRAW -> {
-                                    val withdraw = doc.toObject(WithDraw::class.java)
-                                    temp.add(BalanceChangesSort(withdraw,withdraw.date))
-                                }
                             }
                         }
                         bllisttosort.postValue(temp)

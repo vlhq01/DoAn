@@ -109,10 +109,9 @@ class HistoryAdapter(
         fun bind(item: Transfer) {
             binding.txtHistoryName.text = item.receivername
             binding.txttransfertime.text = item.date.substring(0,10)
-            binding.txthistransamount.text = "-" + item.amount.toString()+"đ"
+            binding.txthistransamount.text = "-"+item.amount.toString()+"đ"
         }
-
-        init {
+        init{
             binding.root.setOnClickListener(this)
         }
 
